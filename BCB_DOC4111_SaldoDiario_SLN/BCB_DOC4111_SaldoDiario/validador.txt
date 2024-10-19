@@ -1,0 +1,173 @@
+﻿
+https://www.bcb.gov.br/estabilidadefinanceira/leiautedocumentoscrd?leiaute_arquivos_tabela_page=1&searchText=
+
+namespace BCB_DOC4111_SaldoDiario.Domain.Services
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Xml.Linq;
+
+    public class ValidacaoTransacaoService
+    {
+        // Método para desserializar o XML e converter em lista de Transacao
+        public List<Transacao> DesserializarXmlParaTransacao(string filePath)
+        {
+            var xml = XElement.Load(filePath);
+
+            var transacoes = xml.Element("contas")
+                                .Elements("conta")
+                                .Select(x => new Transacao
+                                {
+                                    CodigoContaCosif = (CodigoContaCosif)Enum.Parse(typeof(CodigoContaCosif), x.Attribute("codigoConta").Value),
+                                    Valor = decimal.Parse(x.Attribute("saldoDia").Value),
+                                    DataTransacao = DateTime.Now // Aqui podemos atribuir a data que faz sentido para o contexto
+                                })
+                                .ToList();
+
+            return transacoes;
+        }
+
+        // Método para criticar as transações (validação)
+        public List<Critica> CriticarTransacoes(string filePath)
+        {
+            var xml = XElement.Load(filePath);
+            var criticas = new List<Critica>();
+
+            // Validar cada transação do XML
+            int numeroLinha = 1;
+            foreach (var conta in xml.Element("contas").Elements("conta"))
+            {
+                // Validação do campo codigoConta
+                string codigoConta = conta.Attribute("codigoConta").Value;
+                if (!System.Text.RegularExpressions.Regex.IsMatch(codigoConta, @"^\d{10}$"))
+                {
+                    criticas.Add(new Critica
+                    {
+                        NumeroLinha = numeroLinha,
+                        Campo = "codigoConta",
+                        ValorCampo = codigoConta
+                    });
+                }
+
+                // Validação do campo saldoDia
+                string saldoDia = conta.Attribute("saldoDia").Value;
+                if (!decimal.TryParse(saldoDia, out decimal saldo) || saldo <= -100000000000000000 || saldo >= 100000000000000000)
+                {
+                    criticas.Add(new Critica
+                    {
+                        NumeroLinha = numeroLinha,
+                        Campo = "saldoDia",
+                        ValorCampo = saldoDia
+                    });
+                }
+
+                numeroLinha++;
+            }
+
+            return criticas;
+        }
+    }
+
+    // Classe para representar uma crítica
+    public class Critica
+    {
+        public int NumeroLinha { get; set; }
+        public string Campo { get; set; }
+        public string ValorCampo { get; set; }
+    }
+}
+
+
+namespace BCB_DOC4111_SaldoDiario.Application
+{
+    using BCB_DOC4111_SaldoDiario.Domain;
+    using BCB_DOC4111_SaldoDiario.Domain.Services;
+    using System.Xml.Linq;
+    using System.Collections.Generic;
+
+    public class TransacaoAppService
+    {
+        private readonly ITransacaoRepository _transacaoRepository;
+        private readonly CalculadorDeSaldoService _calculadorDeSaldo;
+        private readonly ValidacaoTransacaoService _validacaoTransacaoService;
+
+        public TransacaoAppService(ITransacaoRepository transacaoRepository, 
+                                   CalculadorDeSaldoService calculadorDeSaldo,
+                                   ValidacaoTransacaoService validacaoTransacaoService)
+        {
+            _transacaoRepository = transacaoRepository;
+            _calculadorDeSaldo = calculadorDeSaldo;
+            _validacaoTransacaoService = validacaoTransacaoService;
+        }
+
+        // Orquestração: Gerar o XML a partir das transações
+        public XElement GerarXml(string codigoDocumento, string cnpj, string dataBase, string tipoRemessa)
+        {
+            var transacoes = _transacaoRepository.ObterTransacaoDoBanco();
+            var transacoesAgrupadas = _calculadorDeSaldo.CalcularSaldoDiario(transacoes);
+
+            var documento = new XElement("documento",
+                new XAttribute("codigoDocumento", codigoDocumento),
+                new XAttribute("cnpj", cnpj),
+                new XAttribute("dataBase", dataBase),
+                new XAttribute("tipoRemessa", tipoRemessa),
+                new XElement("contas",
+                    from transacao in transacoesAgrupadas
+                    select new XElement("conta",
+                        new XAttribute("codigoConta", ((int)transacao.CodigoContaCosif).ToString()),
+                        new XAttribute("saldoDia", transacao.Valor.ToString("F2"))
+                    )
+                )
+            );
+
+            return documento;
+        }
+
+        // Orquestração: Criticar transações a partir do XML
+        public List<Critica> CriticarTransacoes(string filePath)
+        {
+            return _validacaoTransacaoService.CriticarTransacoes(filePath);
+        }
+    }
+}
+
+// Apresentação (Console Application)
+namespace BCB_DOC4111_SaldoDiario
+{
+    using BCB_DOC4111_SaldoDiario.Application;
+    using BCB_DOC4111_SaldoDiario.Infrastructure;
+    using BCB_DOC4111_SaldoDiario.Domain.Services;
+    using System;
+
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            // Instancia o repositório, serviço de domínio e serviço de aplicação
+            var transacaoRepo = new TransacaoRepository();
+            var calculadorDeSaldo = new CalculadorDeSaldoService();
+            var validacaoTransacaoService = new ValidacaoTransacaoService();
+            var transacaoAppService = new TransacaoAppService(transacaoRepo, calculadorDeSaldo, validacaoTransacaoService);
+
+            // Especificar o caminho do arquivo XML a ser validado
+            string filePath = "caminho/para/seu/arquivo.xml";
+
+            // Executar a crítica das transações
+            var criticas = transacaoAppService.CriticarTransacoes(filePath);
+
+            // Exibir críticas no console
+            Console.WriteLine("Críticas encontradas:");
+            foreach (var critica in criticas)
+            {
+                Console.WriteLine($"Linha {critica.NumeroLinha}, Campo {critica.Campo}, Valor {critica.ValorCampo}");
+            }
+
+            // Caso deseje também gerar o XML após a crítica:
+            var xml = transacaoAppService.GerarXml("4111", "12345678", DateTime.Now.ToString("yyyy-MM-dd"), "S");
+            Console.WriteLine(xml);
+        }
+    }
+}
+
+

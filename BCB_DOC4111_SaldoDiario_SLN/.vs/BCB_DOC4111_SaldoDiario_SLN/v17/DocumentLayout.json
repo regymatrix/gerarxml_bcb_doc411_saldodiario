@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\gestaomargiteens\\Desktop\\BCB_DOC4111_SaldosContabeisDiarios\\BCB_DOC4111_SaldoDiario_SLN\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{41896EAD-F9C5-4FAB-997B-1F3DBCB0AFB5}|BCB_DOC4111_SaldoDiario\\BCB_DOC4111_SaldoDiario.csproj|c:\\users\\gestaomargiteens\\desktop\\bcb_doc4111_saldoscontabeisdiarios\\bcb_doc4111_saldodiario_sln\\bcb_doc4111_saldodiario\\validador.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{41896EAD-F9C5-4FAB-997B-1F3DBCB0AFB5}|BCB_DOC4111_SaldoDiario\\BCB_DOC4111_SaldoDiario.csproj|solutionrelative:bcb_doc4111_saldodiario\\validador.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{41896EAD-F9C5-4FAB-997B-1F3DBCB0AFB5}|BCB_DOC4111_SaldoDiario\\BCB_DOC4111_SaldoDiario.csproj|c:\\users\\gestaomargiteens\\desktop\\bcb_doc4111_saldoscontabeisdiarios\\bcb_doc4111_saldodiario_sln\\bcb_doc4111_saldodiario\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{41896EAD-F9C5-4FAB-997B-1F3DBCB0AFB5}|BCB_DOC4111_SaldoDiario\\BCB_DOC4111_SaldoDiario.csproj|solutionrelative:bcb_doc4111_saldodiario\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:764764211:0:{83107a3e-496a-485e-b455-16ddb978e55e}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "validador.txt",
+              "DocumentMoniker": "C:\\Users\\gestaomargiteens\\Desktop\\BCB_DOC4111_SaldosContabeisDiarios\\BCB_DOC4111_SaldoDiario_SLN\\BCB_DOC4111_SaldoDiario\\validador.txt",
+              "RelativeDocumentMoniker": "BCB_DOC4111_SaldoDiario\\validador.txt",
+              "ToolTip": "C:\\Users\\gestaomargiteens\\Desktop\\BCB_DOC4111_SaldosContabeisDiarios\\BCB_DOC4111_SaldoDiario_SLN\\BCB_DOC4111_SaldoDiario\\validador.txt",
+              "RelativeToolTip": "BCB_DOC4111_SaldoDiario\\validador.txt",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAEAAABtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2024-10-19T10:08:49.038Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\gestaomargiteens\\Desktop\\BCB_DOC4111_SaldosContabeisDiarios\\BCB_DOC4111_SaldoDiario_SLN\\BCB_DOC4111_SaldoDiario\\Program.cs",
+              "RelativeDocumentMoniker": "BCB_DOC4111_SaldoDiario\\Program.cs",
+              "ToolTip": "C:\\Users\\gestaomargiteens\\Desktop\\BCB_DOC4111_SaldosContabeisDiarios\\BCB_DOC4111_SaldoDiario_SLN\\BCB_DOC4111_SaldoDiario\\Program.cs",
+              "RelativeToolTip": "BCB_DOC4111_SaldoDiario\\Program.cs",
+              "ViewState": "AQIAADUAAAAAAAAAAAAAAEUAAAAzAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-19T02:28:14.584Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
